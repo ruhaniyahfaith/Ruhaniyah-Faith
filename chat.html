@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Chat | Ruhaniyah Faith</title>
+<meta name="viewport" content="width=400, user-scalable=no">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root{
+  --bg:#0b0f0c;
+  --card:#141b16;
+  --gold:#f1c40f;
+  --dark:#000;
+  --user-bubble:#0f1a12;
+  --admin-bubble:#34495e;
+}
+*{box-sizing:border-box;font-family:Poppins,sans-serif;}
+body{margin:0;background:var(--dark);display:flex;justify-content:center;color:#fff;}
+.app{width:400px;min-height:100vh;background:var(--bg);display:flex;flex-direction:column;}
+.nav{
+  display:flex;align-items:center;padding:14px 20px;
+  background:#0f1a12;color:var(--gold);font-size:18px;font-weight:600;
+  border-bottom:1px solid #1a1a1a;
+}
+.chat-window{
+  flex-grow:1;padding:10px 15px;overflow-y:auto;
+  display:flex;
+  flex-direction:column; 
+  position: relative; 
+}
+.chat-window > *:first-child:not(#watermark) {
+    margin-top: auto;
+}
+.input-area{
+  padding:10px 15px;background:#1a1a1a;display:flex;
+  align-items:center;gap:10px;
+}
+.input-area input{
+  flex-grow:1;padding:10px;border-radius:20px;border:none;
+  background:var(--bg);color:#fff;font-size:14px;
+}
+.input-area button{
+  background:var(--gold);color:var(--dark);border:none;
+  width:40px;height:40px;border-radius:50%;cursor:pointer;
+}
+#watermark{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none; 
+    z-index: 0;
+    background-image: url('image/logo.png'); 
+    background-repeat: repeat;
+    background-size: 100% auto; 
+    background-position: center;
+}
+.message{
+  margin-bottom:10px;
+  max-width:85%; 
+  position:relative;
+  display: block; 
+  clear: both;
+}
+.bubble{
+  padding:10px 12px;border-radius:15px;line-height:1.4;
+  font-size:14px;position:relative;
+  display: inline-block; 
+  word-wrap: break-word;
+}
+.user .message{
+  margin-left:auto; 
+  margin-right: 0;
+  text-align: right;
+}
+.user .bubble{
+  background:var(--user-bubble);color:#fff;
+  border-bottom-right-radius:0;
+  float: right; 
+}
+.admin .message{
+  margin-right:auto; 
+  margin-left: 0;
+  text-align: left;
+}
+.admin .bubble{
+  background:var(--admin-bubble);color:#fff;
+  border-bottom-left-radius:0;
+  float: left; 
+}
+.timestamp{
+  display:block;text-align:right;font-size:10px;
+  color:#aaa;margin-top:3px;
+}
+.bubble[data-deleted="true"] {
+    background: #333 !important;
+    color: #aaa !important;
+    font-style: italic;
+    border: 1px dashed #555;
+}
+#contextMenu{
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); 
+    background: #141b16; 
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+    z-index: 100;
+    display: none;
+    overflow: hidden;
+    min-width: 200px;
+    border: 1px solid #222;
+}
+#contextMenu button{
+    display: flex; 
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 12px 20px;
+    background: none;
+    border: none;
+    color: #fff;
+    text-align: left;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 14px;
+}
+#contextMenu button:hover{background:#333;}
+#contextMenu button i {
+    font-size: 16px;
+    color: var(--gold);
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+<div class="nav" id="chatNav">Chatting with Admin</div>
+
+<div class="chat-window" id="chatWindow">
+  <div id="watermark"></div>
+</div>
+
+<div class="input-area">
+  <input id="messageInput" placeholder="Type a message..." onkeyup="checkInput(event)">
+  <button onclick="sendMessage()">
+    <i class="fa-solid fa-paper-plane"></i>
+  </button>
+</div>
+
+<div class="context-menu" id="contextMenu">
+    <button onclick="copyMessage()"> <i class="fa-solid fa-copy"></i> Copy Message</button>
+    <button id="delForMeBtn" onclick="deleteMessage('me')"> <i class="fa-solid fa-trash-can"></i> Delete for Me</button>
+    <button id="delForEveryoneBtn" onclick="deleteMessage('everyone')"> <i class="fa-solid fa-trash-can-arrow-up"></i> Delete for Everyone</button>
+</div>
+
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+import { 
+  getFirestore, collection, query, orderBy, limit, onSnapshot, 
+  addDoc, doc, updateDoc, arrayUnion
+} from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
+
+// ===================================
+// 🔹 Updated Firebase Config
+// ===================================
+const firebaseConfig = {
+  apiKey: "AIzaSyDYEd660z7AZ3VajTH5r4DWLOYqkfV4824",
+  authDomain: "ruhaniyah-faith.firebaseapp.com",
+  projectId: "ruhaniyah-faith"
+};
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// Get URL parameters
+const params = new URLSearchParams(window.location.search);
+const chatId = params.get('id'); 
+const chatRole = params.get('role'); // 'user' or 'admin'
+const chatName = params.get('name') || 'Support';
+
+// Global variables for context menu
+let currentMsgId = null;
+let currentMsgText = '';
+let currentMsgIsDeleted = false; 
+
+// DOM Elements
+const chatNav = document.getElementById('chatNav');
+const chatWindow = document.getElementById('chatWindow');
+const messageInput = document.getElementById('messageInput');
+const contextMenu = document.getElementById('contextMenu');
+
+// ===================================
+// 🔹 Updated Navigation Title
+// ===================================
+if (chatRole === 'user') {
+    chatNav.innerHTML = `<i class="fa-solid fa-headset"></i> Customer Support (গ্রাহক সহায়তা)`;
+} else {
+    chatNav.innerText = `Chat with: ${chatName}`;
+}
+
+if (!chatId) {
+    chatWindow.innerHTML = '<div style="text-align:center;padding-top:50px;">Invalid Chat ID</div>';
+    throw new Error("Chat ID is missing.");
+}
+
+// ===================================
+// Real-Time Message Listener
+// ===================================
+const messagesRef = collection(db, "support_chats", chatId, "messages");
+const q = query(messagesRef, orderBy("timestamp", "asc"), limit(50));
+
+const unsubscribe = onSnapshot(q, (snapshot) => {
+    let html = '';
+    snapshot.forEach((doc) => {
+        const msg = doc.data();
+        const sender = msg.sender;
+        const isMe = sender === chatRole;
+        const time = msg.timestamp ? new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '...';
+        const deletedFor = msg.deletedFor || [];
+        if (deletedFor.includes(chatRole)) return;
+        const isDeletedForEveryone = msg.text === 'DEL_EVERYONE';
+        const messageContent = isDeletedForEveryone ? 
+            `<i class="fa-solid fa-ban" style="color:#aaa; font-size:12px;"></i> Message deleted.` : msg.text;
+        const messageClass = isMe ? 'user' : 'admin';
+        html += `
+            <div class="message ${messageClass}" id="msg-${doc.id}">
+                <div class="bubble" oncontextmenu="showContextMenu(event)" 
+                     data-id="${doc.id}" 
+                     data-text="${isDeletedForEveryone ? 'Message deleted.' : msg.text.replace(/"/g, '&quot;')}" 
+                     data-sender="${sender}"
+                     data-deleted="${isDeletedForEveryone}">
+                    ${messageContent}
+                    <span class="timestamp">${time}</span>
+                </div>
+            </div>
+        `;
+    });
+
+    const watermarkHTML = document.getElementById('watermark').outerHTML;
+    chatWindow.innerHTML = watermarkHTML + html;
+    chatWindow.scrollTop = chatWindow.scrollHeight;
+
+    if (chatRole === 'admin') {
+        updateDoc(doc(db, "support_chats", chatId), {
+            lastSender: 'admin', 
+        }).catch(e => console.error("Could not update seen status: ", e));
+    }
+});
+
+// Send Message
+window.sendMessage = async () => {
+    const text = messageInput.value.trim();
+    if (!text) return;
+
+    try {
+        await addDoc(messagesRef, {
+            text: text,
+            sender: chatRole,
+            timestamp: Date.now(),
+            deletedFor: [],
+        });
+        await updateDoc(doc(db, "support_chats", chatId), {
+            lastUpdate: Date.now(),
+            lastSender: chatRole, 
+        });
+        messageInput.value = '';
+    } catch (error) {
+        console.error("Error sending message: ", error);
+        alert("Failed to send message.");
+    }
+};
+
+window.checkInput = (event) => {
+    if (event.key === 'Enter') {
+        sendMessage();
+    }
+}
+
+// Context Menu
+window.showContextMenu = (e) => {
+    e.preventDefault(); 
+    contextMenu.style.display = 'none'; 
+    const targetBubble = e.target.closest('.bubble');
+    if (!targetBubble) return; 
+    const msgId = targetBubble.dataset.id;
+    const msgText = targetBubble.dataset.text;
+    const sender = targetBubble.dataset.sender;
+    const isDeleted = targetBubble.dataset.deleted === 'true';
+    currentMsgId = msgId;
+    currentMsgText = msgText;
+    currentMsgIsDeleted = isDeleted;
+    contextMenu.style.display = 'block';
+    const isMyMessage = sender === chatRole;
+    document.getElementById('delForMeBtn').style.display = 'flex';
+    if (isDeleted) {
+        document.getElementById('delForEveryoneBtn').style.display = 'none';
+        document.querySelector('#contextMenu button:first-child').style.display = 'none';
+    } else {
+        document.getElementById('delForEveryoneBtn').style.display = isMyMessage ? 'flex' : 'none';
+        document.querySelector('#contextMenu button:first-child').style.display = 'flex';
+    }
+};
+document.addEventListener('click', () => { contextMenu.style.display = 'none'; });
+document.getElementById('contextMenu').addEventListener('click', (e) => e.stopPropagation());
+
+// Delete & Copy
+window.copyMessage = () => {
+    navigator.clipboard.writeText(currentMsgText)
+        .then(() => alert("Message copied: " + currentMsgText))
+        .catch(err => console.error('Failed to copy: ', err));
+    contextMenu.style.display = 'none';
+};
+
+window.deleteMessage = async (type) => {
+    if (!currentMsgId) return;
+    try {
+        const msgDocRef = doc(db, "support_chats", chatId, "messages", currentMsgId);
+        if (type === 'me') {
+            await updateDoc(msgDocRef, { deletedFor: arrayUnion(chatRole) });
+        } else if (type === 'everyone' && !currentMsgIsDeleted) {
+            await updateDoc(msgDocRef, { text: 'DEL_EVERYONE' });
+        }
+    } catch (error) {
+        console.error("Error deleting message: ", error);
+        alert("Failed to delete message.");
+    } finally {
+        currentMsgId = null;
+        currentMsgIsDeleted = false;
+        contextMenu.style.display = 'none';
+    }
+};
+</script>
+</body>
+</html>

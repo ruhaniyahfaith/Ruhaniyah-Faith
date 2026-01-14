@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Customer Support | Ruhaniyah Faith</title>
+<meta name="viewport" content="width=400, user-scalable=no">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root{
+  --bg:#0b0f0c;
+  --card:#141b16;
+  --gold:#f1c40f;
+  --dark:#000;
+}
+*{box-sizing:border-box;font-family:Poppins,sans-serif;}
+body{
+  margin:0;background:var(--dark);display:flex;
+  justify-content:center;color:#fff;
+}
+.app{width:400px;min-height:100vh;background:var(--bg);}
+.nav{
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  padding:14px;background:#0f1a12;color:var(--gold);
+  font-size:20px;font-weight:600;
+}
+.container{padding:20px;}
+.card{
+  background:var(--card);margin-bottom:20px;
+  padding:20px;border-radius:16px;text-align:center;
+}
+input{
+  width:100%;margin-top:10px;padding:14px;border-radius:10px;
+  border:1px solid #333;background:#000;color:var(--gold);
+  font-size:16px;text-align:center;
+}
+.btn{
+  margin-top:20px;width:100%;padding:16px;border:none;
+  border-radius:10px;background:var(--gold);color:#000;
+  font-weight:700;cursor:pointer;font-size:18px;
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+<div class="nav">
+  <i class="fa-solid fa-headset"></i> Customer Support (গ্রাহক সহায়তা)
+</div>
+
+<div class="container">
+  <div class="card">
+    <h3>Start a New Chat (নতুন চ্যাট শুরু করুন)</h3>
+    <form id="chatForm">
+      <input id="userName" placeholder="Your Name / আপনার নাম" required>
+      <input id="userMobile" type="tel" inputmode="numeric" placeholder="Mobile Number / মোবাইল নম্বর" required>
+      <button class="btn" type="submit">
+        <i class="fa-solid fa-arrow-right"></i> Start Chat
+      </button>
+    </form>
+    
+    <p style="margin-top: 15px; font-size: 13px; color: #888;">
+        Your conversation ID will be your Mobile Number.
+    </p>
+  </div>
+</div>
+
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyA6G_gK8kYC8I_clx_q0FCG4VXKZXesZOw",
+  authDomain: "ruhaniyah-faith.firebaseapp.com",
+  projectId: "ruhaniyah-faith"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+document.getElementById('chatForm').onsubmit = async (e) => {
+  e.preventDefault();
+  const name = document.getElementById('userName').value.trim();
+  const mobile = document.getElementById('userMobile').value.trim();
+
+  if (mobile.length !== 10 || isNaN(mobile)) {
+      alert("Please enter a valid 10-digit mobile number.");
+      return;
+  }
+  
+  const chatId = mobile;
+
+  try {
+    await setDoc(doc(db, "support_chats", chatId), {
+      userName: name,
+      userMobile: mobile,
+      lastUpdate: Date.now(),
+      lastSender: 'user',
+    }, { merge: true });
+
+    window.location.href = `chat.html?id=${chatId}&name=${encodeURIComponent(name)}&role=user`;
+
+  } catch (error) {
+    console.error("Error starting chat: ", error);
+    alert("Could not start chat. Please try again.");
+  }
+};
+</script>
+</body>
+</html>

@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Order Tracking | Ruhaniyah Faith</title>
+
+<meta name="viewport" content="width=400, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+:root{
+  --gold:#d4af37;
+  --dark:#000;
+  --medium-dark:#1a1a1a;
+  --light-grey:#a0a0a0;
+  --white:#fff;
+  --red:#e74c3c;
+  --green:#2ecc71;
+}
+
+*{box-sizing:border-box;font-family:Poppins,sans-serif}
+
+html,body{
+  margin:0;
+  width:400px;
+  max-width:400px;
+  min-height: 100vh;
+  background:var(--medium-dark);
+  color:var(--white);
+}
+body{margin:0 auto}
+
+header{
+  background:var(--dark);
+  color:var(--gold);
+  padding:20px;
+  text-align:center;
+  font-size:22px;
+  font-weight:700;
+}
+
+.container{padding:16px}
+
+.card{
+  background:var(--dark);
+  border-radius:12px;
+  padding:20px;
+  margin-bottom:20px;
+  border-left:5px solid var(--gold);
+}
+
+.btn{
+  width:100%;
+  padding:14px;
+  border:none;
+  border-radius:10px;
+  background:var(--gold);
+  color:var(--dark);
+  font-size:16px;
+  font-weight:600;
+  cursor:pointer;
+  margin-top:12px;
+  transition: background 0.2s;
+}
+.btn:hover{background: #c9a24d;}
+
+input{
+  width:100%;
+  padding:18px;
+  border-radius:10px;
+  border:1px solid #333;
+  background:#000;
+  color:#fff;
+  font-size:17px;
+  text-align:center;
+}
+
+.product-info h2{
+  margin:0;
+  font-family:'Playfair Display',serif;
+}
+.price{
+  margin-top:8px;
+  color:var(--gold);
+  font-size:20px;
+  font-weight:600;
+}
+
+/* Timeline */
+.timeline{
+  border-left:3px solid rgba(212,175,55,.3);
+  padding-left:25px;
+}
+.step{
+  margin-bottom:25px;
+  color:var(--light-grey);
+  position:relative;
+}
+.step::before{
+  content:"";
+  width:16px;height:16px;
+  border-radius:50%;
+  border:2px solid var(--light-grey);
+  background:var(--medium-dark);
+  position:absolute;
+  left:-34px;top:50%;
+  transform:translateY(-50%);
+}
+.step.active{
+  color:var(--white);
+  font-weight:600;
+}
+.step.active::before{
+  background:var(--gold);
+  border-color:var(--gold);
+  box-shadow: 0 0 0 4px rgba(212,175,55,0.2);
+}
+
+/* Cancel */
+.cancel-box{
+  background:var(--dark);
+  border-radius:14px;
+  padding:25px;
+  text-align:center;
+  border:2px solid var(--red);
+  margin-top:20px;
+}
+.cancel-box h2{color:var(--red)}
+
+/* 🌟 SUCCESS BOX 🌟 */
+.success-box{
+  background:var(--dark);
+  border-radius:14px;
+  padding:30px 20px;
+  text-align:center;
+  border:2px solid var(--green);
+  margin-top:20px;
+  box-shadow: 0 0 20px rgba(46, 204, 113, 0.2);
+}
+.success-box h2{
+  color:var(--green);
+  font-size:26px;
+  margin-bottom:15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.success-box h2 i{
+    margin-right: 10px;
+}
+.success-box .success-text{
+  font-size:16px;
+  color:var(--white);
+  line-height:1.7;
+  margin-bottom:20px;
+}
+.success-box .motivation-text{
+    font-size: 13px;
+    color: var(--gold);
+    margin-top: 15px;
+    font-style: italic;
+}
+
+/* 🔔 Custom Toast Message Style 🔔 */
+#customToast {
+    visibility: hidden;
+    min-width: 250px;
+    background-color: var(--dark);
+    color: var(--white);
+    text-align: center;
+    border-radius: 8px;
+    padding: 16px;
+    position: fixed;
+    z-index: 99;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 30px; 
+    font-size: 14px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--gold);
+}
+
+#customToast.show {
+    visibility: visible;
+    -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+
+@-webkit-keyframes fadein {
+    from {bottom: 0; opacity: 0;} 
+    to {bottom: 30px; opacity: 1;}
+}
+
+@keyframes fadein {
+    from {bottom: 0; opacity: 0;}
+    to {bottom: 30px; opacity: 1;}
+}
+
+@-webkit-keyframes fadeout {
+    from {bottom: 30px; opacity: 1;} 
+    to {bottom: 0; opacity: 0;}
+}
+
+@keyframes fadeout {
+    from {bottom: 30px; opacity: 1;}
+    to {bottom: 0; opacity: 0;}
+}
+</style>
+</head>
+
+<body>
+
+<header>Order Tracking (অর্ডার ট্র্যাকিং)</header>
+
+<div class="container">
+
+  <div class="card" id="orderSearchBox" style="text-align:center;margin-top:80px">
+    <h3>Track Your Order (অর্ডার ট্র্যাক করুন)</h3>
+    <p style="color:#aaa;font-size:14px">
+      Enter Order ID (অর্ডার আইডি লিখুন)
+    </p>
+
+    <input id="orderIdInput" placeholder="ALM-2025-0001">
+    <button class="btn" onclick="trackById()">
+      Track Order (অর্ডার দেখুন)
+    </button>
+  </div>
+
+  <div class="card product-info" id="productBox" style="display:none">
+    <h2 id="pName"></h2>
+    <div class="price">₹ <span id="pPrice"></span></div>
+  </div>
+
+  <div class="cancel-box" id="cancelBox" style="display:none">
+    <h2>Order Cancelled (অর্ডার বাতিল)</h2>
+    <p id="cancelReason"></p>
+  </div>
+
+  <div class="success-box" id="successBox" style="display:none">
+    <h2><i class="fas fa-check-circle"></i> Order Delivered Successfully!
+    <br>
+(অর্ডার সফলভাবে ডেলিভারি সম্পন্ন হয়েছে!)</h2>
+    <div class="success-text">
+      Thank you for shopping with Ruhaniyah Faith.
+We truly appreciate your trust and support.
+<br>
+(Ruhaniyah Faith থেকে কেনাকাটার জন্য ধন্যবাদ।
+আপনার বিশ্বাস ও সমর্থনের জন্য আমরা কৃতজ্ঞ।)
+<br>
+We look forward to serving you again.
+<br>
+(আবার আপনাকে সেবা দেওয়ার অপেক্ষায় থাকলাম।)
+    </div>
+    <button class="btn" onclick="location.href='feedback.html'">
+      <i class="fas fa-comment"></i> Give Feedback (ফিডব্যাক দিন)
+    </button>
+    <div class="motivation-text">
+        Your feedback helps us grow and serve you better.
+        <br>
+(আপনার ফিডব্যাক আমাদের আরও ভালো হতে সাহায্য করে।)
+    </div>
+  </div>
+
+  <div class="card" id="timelineBox" style="display:none">
+    <div class="timeline">
+      <div class="step" id="step1">Order Placed (অর্ডার নেওয়া)</div>
+      <div class="step" id="step2">Order Confirmed (কনফার্ম)</div>
+      <div class="step" id="step3">Packaging (প্যাকেজিং)</div>
+      <div class="step" id="step4">Delivery Processing (ডেলিভারি)</div>
+      <div class="step" id="step5">Delivered (ডেলিভারি সম্পন্ন)</div>
+    </div>
+  </div>
+
+  <div class="card" id="orderIdBox" style="display:none">
+    <p style="font-size:14px;color:#ccc;line-height:1.5">
+      Save this Order ID for future tracking.<br>
+      (ভবিষ্যতে ট্র্যাক করার জন্য এই অর্ডার আইডি সংরক্ষণ করুন)
+    </p>
+
+    <p><b>Order ID (অর্ডার আইডি)</b></p>
+    <p id="orderIdText" style="color:var(--gold)"></p>
+
+    <button class="btn" onclick="copyOrderId()">
+      Copy Order ID (কপি করুন)
+    </button>
+  </div>
+
+</div>
+
+<div id="customToast">
+    <i class="fas fa-copy" style="color:var(--gold); margin-right: 5px;"></i> Order ID copied! (অর্ডার আইডি কপি হয়েছে)
+</div>
+
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script> 
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
+
+// ✅ Updated Firebase Config from your code
+const firebaseConfig = {
+  apiKey: "AIzaSyDYEd660z7AZ3VajTH5r4DWLOYqkfV4824",
+  authDomain: "ruhaniyah-faith.firebaseapp.com",
+  projectId: "ruhaniyah-faith",
+  storageBucket: "ruhaniyah-faith.firebasestorage.app",
+  messagingSenderId: "74008169318",
+  appId: "1:74008169318:web:844b0cfc89e31c9bf516a7",
+  measurementId: "G-LGH49FVZNP"
+};
+
+const app = initializeApp(firebaseConfig);
+const db  = getFirestore(app);
+
+const params = new URLSearchParams(location.search);
+const orderId = params.get("id");
+
+// DOM Elements
+const orderSearchBox = document.getElementById("orderSearchBox");
+const productBox = document.getElementById("productBox");
+const timelineBox = document.getElementById("timelineBox");
+const orderIdBox = document.getElementById("orderIdBox");
+const cancelBox = document.getElementById("cancelBox");
+const successBox = document.getElementById("successBox");
+const pName = document.getElementById("pName");
+const pPrice = document.getElementById("pPrice");
+const orderIdText = document.getElementById("orderIdText");
+const orderIdInput = document.getElementById("orderIdInput");
+const customToast = document.getElementById("customToast");
+
+
+function showToast(message) {
+  customToast.innerHTML = '<i class="fas fa-copy" style="color:var(--gold); margin-right: 5px;"></i> ' + message;
+  customToast.classList.add("show");
+  setTimeout(function(){ customToast.classList.remove("show"); }, 3000); 
+}
+window.showToast = showToast; 
+
+window.trackById = ()=>{
+  const id = orderIdInput.value.trim();
+  if(!id) {
+    showToast("Enter Order ID (অর্ডার আইডি দিন)");
+    return;
+  }
+  location.href = "tracking.html?id=" + id;
+};
+
+window.copyOrderId = ()=>{
+  navigator.clipboard.writeText(orderIdText.innerText).then(() => {
+    showToast("Order ID copied! (অর্ডার আইডি কপি হয়েছে)");
+  }).catch(err => {
+    console.error('Copy failed:', err);
+    alert("Copy failed (কপি করতে সমস্যা হয়েছে)"); 
+  });
+};
+
+async function loadOrder(id){
+  // সমস্ত কন্টেন্ট রিসেট
+  orderSearchBox.style.display="none";
+  productBox.style.display="none";
+  timelineBox.style.display="none";
+  orderIdBox.style.display="none";
+  cancelBox.style.display="none";
+  successBox.style.display="none";
+  
+
+  const snap = await getDoc(doc(db,"orders",id));
+  
+  if(!snap.exists()){
+    showToast("Invalid Order ID (অর্ডার আইডি সঠিক নয়)");
+    orderSearchBox.style.display="block";
+    return;
+  }
+
+  const d = snap.data();
+  const status = d.status ? d.status.toLowerCase() : 'placed'; 
+
+  productBox.style.display="block";
+  orderIdBox.style.display="block";
+
+  pName.innerText  = d.productName;
+  pPrice.innerText = d.price;
+  orderIdText.innerText = id;
+
+  if(status==="cancelled"){
+    cancelBox.style.display="block";
+    return;
+  }
+  
+  const steps=["placed","confirmed","packaging","delivery","delivered"];
+  const currentStepIndex = steps.indexOf(status);
+  
+  if(status === "completed"){
+    successBox.style.display="block";
+    timelineBox.style.display="none"; 
+    return;
+  }
+
+  timelineBox.style.display="block";
+  successBox.style.display="none"; 
+  
+  steps.forEach((s,i)=>{
+    document.getElementById("step"+(i+1))
+      .classList.toggle("active", currentStepIndex >= i);
+  });
+}
+
+if(orderId){
+  loadOrder(orderId);
+} else {
+    orderSearchBox.style.display="block";
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Feedback | Ruhaniyah Faith</title>
+
+<meta name="viewport" content="width=400, user-scalable=no">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --bg:#050705;
+  --card-bg:#121a15;
+  --gold:#f3c94b;
+  --soft-gold:rgba(243,201,75,.25);
+  --border-color:#1f3d2b;
+}
+
+*{
+  box-sizing:border-box;
+  font-family:'Poppins', sans-serif;
+  transition: all 0.3s ease;
+}
+
+body{
+  margin:0;
+  background:#000;
+  display:flex;
+  justify-content:center;
+}
+
+.app{
+  width:400px;
+  min-height:100vh;
+  background:linear-gradient(180deg, var(--bg) 0%, #0b0f0c 100%);
+  color:#fff;
+}
+
+header{
+  background:#0f1a12;
+  padding:20px;
+  text-align:center;
+  font-size:24px;
+  font-weight:700;
+  color:var(--gold);
+  border-bottom:1px solid #2a4e3a;
+}
+
+.tabs{
+  display:flex;
+  gap:12px;
+  padding:16px;
+}
+
+.tabs button{
+  flex:1;
+  padding:15px;
+  background:#101c14;
+  color:#aaa;
+  border:none;
+  border-radius:18px;
+  font-size:15px;
+  cursor:pointer;
+  transition: all 0.3s ease;
+}
+
+.tabs button:hover:not(.active) {
+    background: #1a2b1f;
+    color: #fff;
+}
+
+.tabs button.active{
+  background:linear-gradient(45deg,var(--gold),#d4ac0d);
+  color:#000;
+  font-weight:700;
+  box-shadow:0 8px 20px var(--soft-gold);
+}
+
+.card{
+  background:linear-gradient(180deg, var(--card-bg) 0%, #0e1511 100%);
+  margin:18px;
+  padding:30px 24px;
+  border-radius:26px;
+  border:1px solid var(--border-color);
+  box-shadow:0 15px 35px rgba(0,0,0,.7);
+}
+
+.center{text-align:center}
+
+input,textarea{
+  width:100%;
+  padding:18px;
+  margin-top:18px;
+  border-radius:16px;
+  border:1px solid var(--border-color);
+  background:var(--bg);
+  color:var(--gold);
+  font-size:16px;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+input:focus, textarea:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 8px var(--soft-gold);
+    outline: none;
+}
+
+textarea{
+  resize:none;
+  height:120px;
+}
+
+.loves{
+  display:flex;
+  justify-content:center;
+  gap:14px;
+  margin:26px 0 18px;
+  font-size:38px;
+}
+
+.loves i{
+  cursor:pointer;
+  color:#333;
+  transition:all .3s cubic-bezier(.175, .885, .32, 1.275);
+}
+
+.loves i:hover{
+  transform:scale(1.2);
+  color: #555;
+}
+
+.loves i.active{
+  color:var(--gold);
+  text-shadow:0 0 16px var(--soft-gold); 
+  transform:scale(1.1);
+}
+
+.btn{
+  width:100%;
+  padding:18px;
+  margin-top:26px;
+  background:linear-gradient(45deg,var(--gold),#d4ac0d);
+  color:#000;
+  border:none;
+  border-radius:20px;
+  font-size:18px;
+  font-weight:700;
+  cursor:pointer;
+  box-shadow:0 12px 25px var(--soft-gold);
+  transition: all 0.2s ease;
+}
+
+.btn:hover:not(:disabled) {
+    box-shadow: 0 8px 18px var(--soft-gold);
+    transform: translateY(-2px);
+}
+
+.btn:disabled{
+  opacity:.7;
+  cursor:default;
+  box-shadow:0 8px 18px rgba(0,0,0,0.5);
+}
+
+.loading{
+  display:none;
+  justify-content:center;
+  margin-top:18px;
+}
+.loading span{
+  width:10px;
+  height:10px;
+  background:var(--gold);
+  border-radius:50%;
+  margin:0 5px;
+  animation:bounce .6s infinite alternate;
+}
+.loading span:nth-child(2){animation-delay:.2s}
+.loading span:nth-child(3){animation-delay:.4s}
+@keyframes bounce{
+  from{transform:translateY(0)}
+  to{transform:translateY(-10px)}
+}
+
+.alert{
+  display:none;
+  margin-top:22px;
+  padding:16px;
+  border-radius:18px;
+  background:#1a2b1f;
+  color:var(--gold);
+  border:1px solid var(--gold);
+  box-shadow:0 0 15px var(--soft-gold);
+  font-size:15px;
+  font-weight:600;
+  text-align:center;
+}
+
+.avg{
+  text-align:center;
+  margin-bottom:22px;
+  padding:20px;
+  border-radius:20px;
+  background:#0f1a12;
+  border:1px solid var(--border-color);
+  box-shadow:0 10px 25px rgba(0,0,0,.6);
+}
+.avg h3{
+  color:#fff;
+  margin:0;
+  font-size:16px;
+}
+.avg p{
+  margin-top:8px;
+  font-size:32px;
+  color:var(--gold);
+  font-weight:700;
+  text-shadow: 0 0 10px var(--soft-gold);
+}
+
+.feedback-box{
+  background:#0f1a12;
+  padding:20px;
+  border-radius:18px;
+  border-left:5px solid var(--gold);
+  margin-bottom:18px;
+  box-shadow:0 10px 20px rgba(0,0,0,.5);
+}
+
+.feedback-box .name{
+  color:var(--gold);
+  font-weight:700;
+  margin-bottom:6px;
+  font-size:16px;
+}
+
+.feedback-box .love{
+  color:var(--gold);
+  margin-bottom:6px;
+  font-size:14px;
+}
+
+.feedback-box p{
+  color:#ccc;
+  font-size:15px;
+  line-height:1.6;
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<header>
+  <i class="fa-solid fa-heart"></i> Feedback (ফিডব্যাক)
+</header>
+
+<div class="tabs">
+  <button id="tabGive" class="active" onclick="showGive()">
+    <i class="fa-solid fa-pen-to-square"></i> Give Feedback
+  </button>
+  <button id="tabView" onclick="showView()">
+    <i class="fa-solid fa-comment-dots"></i> View Feedback
+  </button>
+</div>
+
+<div class="card center" id="giveBox">
+  <h2 style="color:var(--gold); font-size:22px; margin-top:0;">
+    Share Your Experience<br>(আপনার অভিজ্ঞতা শেয়ার করুন)
+  </h2>
+
+  <input id="nameInput" placeholder="Your Name (আপনার নাম)">
+  <div class="loves">
+    <i class="fa-solid fa-heart" data-v="1"></i>
+    <i class="fa-solid fa-heart" data-v="2"></i>
+    <i class="fa-solid fa-heart" data-v="3"></i>
+    <i class="fa-solid fa-heart" data-v="4"></i>
+    <i class="fa-solid fa-heart" data-v="5"></i>
+  </div>
+  <textarea id="msgInput" placeholder="Write your feedback (আপনার ফিডব্যাক লিখুন)"></textarea>
+
+  <button class="btn" id="sendBtn" onclick="submitFeedback()">Submit Feedback</button>
+
+  <div class="loading" id="loading"><span></span><span></span><span></span></div>
+  <div class="alert" id="alertBox"></div>
+</div>
+
+<div class="card" id="viewBox" style="display:none"></div>
+
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
+
+// 🔹 Updated Firebase Config
+const firebaseConfig = {
+  apiKey: "AIzaSyDYEd660z7AZ3VajTH5r4DWLOYqkfV4824",
+  authDomain: "ruhaniyah-faith.firebaseapp.com",
+  projectId: "ruhaniyah-faith"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+let loveValue = 0;
+
+const loveIcons = document.querySelectorAll(".loves i");
+loveIcons.forEach(i=>{
+  i.onclick=()=>{
+    loveValue=parseInt(i.dataset.v);
+    loveIcons.forEach(h=>{
+      h.classList.toggle("active", parseInt(h.dataset.v) <= loveValue);
+    });
+  };
+});
+
+window.showGive=()=>{
+  giveBox.style.display="block";
+  viewBox.style.display="none";
+  tabGive.classList.add("active");
+  tabView.classList.remove("active");
+  alertBox.style.display="none";
+  loading.style.display="none"; 
+};
+
+window.showView=async()=>{
+  giveBox.style.display="none";
+  viewBox.style.display="block";
+  tabGive.classList.remove("active");
+  tabView.classList.add("active");
+  
+  viewBox.innerHTML="<div style='text-align:center; color:#ccc;'>Loading feedbacks...</div>";
+  
+  const snap = await getDocs(collection(db,"feedbacks"));
+  const list = [];
+  let total=0,count=0;
+  snap.forEach(d=>list.push(d.data()));
+  list.sort((a,b)=>(b.time?.seconds || 0) - (a.time?.seconds || 0));
+  
+  let feedbacksHtml = "";
+  list.forEach(f=>{
+    const love = Math.max(1, Math.min(5, f.love || 1));
+    total += love;
+    count++;
+    feedbacksHtml+=`
+      <div class="feedback-box">
+        <div class="name">${f.name || 'Anonymous'}</div>
+        <div class="love">${"❤️".repeat(love)}</div>
+        <p>${f.message}</p>
+      </div>`;
+  });
+
+  const avg = count ? (total/count).toFixed(1) : "0.0";
+  const avgHtml = `<div class="avg"><h3>⭐ Average Love Score</h3><p>${avg} ❤️</p></div>`;
+  
+  viewBox.innerHTML = avgHtml + feedbacksHtml;
+};
+
+window.submitFeedback=async()=>{
+  if(!nameInput.value.trim()||!msgInput.value.trim()||!loveValue){
+    alertBox.innerText="Please fill all fields (সব তথ্য দিন)";
+    alertBox.style.display="block";
+    return;
+  }
+
+  sendBtn.disabled=true;
+  sendBtn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Submitting...';
+  loading.style.display="flex";
+  alertBox.style.display="none";
+
+  try {
+    await addDoc(collection(db,"feedbacks"),{
+      name:nameInput.value.trim(),
+      message:msgInput.value.trim(),
+      love:loveValue,
+      time:serverTimestamp()
+    });
+    
+    loading.style.display="none";
+    sendBtn.disabled=false;
+    sendBtn.innerText="Submit Feedback";
+    alertBox.innerText="Thank you for your feedback ❤️";
+    alertBox.style.display="block";
+
+    nameInput.value = "";
+    msgInput.value = "";
+    loveValue = 0;
+    document.querySelectorAll(".loves i").forEach(h => h.classList.remove("active"));
+
+  } catch (error) {
+    loading.style.display="none";
+    sendBtn.disabled=false;
+    sendBtn.innerText="Submit Feedback";
+    alertBox.innerText="Error submitting feedback. Please try again.";
+    alertBox.style.display="block";
+  }
+};
+</script>
+
+</body>
+</html>

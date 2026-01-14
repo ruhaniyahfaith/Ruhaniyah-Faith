@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Order Now | Ruhaniyah Faith</title>
+
+<meta name="viewport" content="width=400, user-scalable=no">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+:root{
+  --gold:#c9a24d;
+  --dark:#000;
+  --light-dark:#111;
+  --text-white:#fff;
+}
+
+/* Reset & Base */
+*{box-sizing:border-box;font-family:'Poppins',sans-serif;}
+body{margin:0;background:var(--dark);display:flex;justify-content:center;color:var(--text-white);}
+
+/* Fixed Frame */
+.app-frame{
+  width:400px;
+  max-width:400px;
+  min-height:100vh;
+  background:var(--dark);
+  overflow:hidden;
+}
+
+/* Header */
+header{
+  background:var(--light-dark);
+  color:var(--text-white);
+  padding:15px;
+  text-align:center;
+  font-size:22px;
+  font-weight:600;
+}
+
+/* Container */
+.container{padding:20px;}
+
+/* Product Box */
+.product-box{
+  background:var(--light-dark);
+  border-radius:14px;
+  box-shadow:0 10px 25px rgba(0,0,0,.3);
+  margin-bottom:25px;
+}
+.product-info{padding:15px}
+.product-info h2{margin:0;font-size:24px;color:var(--gold);}
+.product-info p{font-size:14px;color:var(--text-white);}
+.price{margin-top:10px;font-size:20px;color:var(--gold);font-weight:600;}
+
+/* Form */
+form{
+  background:var(--light-dark);
+  border-radius:14px;
+  padding:20px;
+  box-shadow:0 10px 25px rgba(0,0,0,.3);
+}
+.section-title{
+  font-weight:600;
+  margin:15px 0 10px;
+  color:var(--text-white);
+}
+
+/* Input Groups */
+.input-group{
+  display:flex;
+  flex-direction:column;
+  margin-bottom:12px;
+}
+.input-group label{
+  font-size:13px;
+  color:var(--text-white);
+  margin-bottom:3px;
+}
+input{
+  padding:12px;
+  border-radius:8px;
+  background:var(--dark);
+  border:1px solid #333;
+  font-size:14px;
+  color:var(--gold);
+}
+
+/* QR Box */
+.qr-box{
+  border:2px solid var(--gold);
+  border-radius:12px;
+  margin:20px 0;
+  overflow:hidden;
+}
+.qr-box img{
+  width:100%;
+  height:350px;
+  display:block;
+}
+
+/* Button */
+button{
+  width:100%;
+  padding:14px;
+  background:var(--gold);
+  color:var(--dark);
+  border:none;
+  border-radius:10px;
+  font-size:16px;
+  font-weight:600;
+  cursor:pointer;
+  position:relative;
+  overflow:hidden;
+  z-index:1;
+  transition: all 0.3s ease;
+}
+button:disabled{
+  opacity:0.8;
+  cursor:default;
+}
+
+/* Loading / Glow Effect */
+.btn-loading{
+  background:#a98539;
+  color:var(--text-white);
+}
+.btn-loading::before{
+  content:'';
+  position:absolute;
+  top:-50%; left:-50%;
+  width:200%; height:200%;
+  background:conic-gradient(transparent,var(--gold),transparent);
+  animation:rotate 2s linear infinite;
+  z-index:-1;
+}
+.btn-loading::after{
+  content:'';
+  position:absolute;
+  inset:5px;
+  background:var(--light-dark);
+  border-radius:6px;
+  z-index:-1;
+}
+@keyframes rotate{
+  0%{transform:rotate(0deg);}
+  100%{transform:rotate(360deg);}
+}
+
+.loading-text{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+}
+</style>
+</head>
+
+<body>
+<div class="app-frame">
+
+<header>Ruhaniyah Faith</header>
+
+<div class="container">
+
+  <!-- Product Info -->
+  <div class="product-box">
+    <div class="product-info">
+      <h2 id="pName">Product Name / পণ্যের নাম</h2>
+      <div class="price">₹ <span id="pPrice">0</span></div>
+      <p id="pDesc">Thank You</p>
+    </div>
+  </div>
+
+  <!-- Order Form -->
+  <form id="orderForm">
+
+    <div class="section-title">Delivery Details / ডেলিভারি বিবরণ</div>
+    <div class="input-group"><label>Full Name / পুরো নাম</label><input id="fullName" required></div>
+    <div class="input-group"><label>Mobile Number / মোবাইল নম্বর</label><input id="mobileNumber" type="tel" inputmode="numeric" required></div>
+    <div class="input-group"><label>Email Address / ইমেইল</label><input></div>
+    <div class="input-group"><label>House / Flat No. / হাউজ / ফ্ল্যাট নং</label><input required></div>
+    <div class="input-group"><label>Street / Road / রাস্তা</label><input required></div>
+    <div class="input-group"><label>Area / Locality / এলাকা</label><input required></div>
+    <div class="input-group"><label>City / শহর</label><input required></div>
+    <div class="input-group"><label>State / রাজ্য</label><input required></div>
+    <div class="input-group"><label>PIN / পিন</label><input inputmode="numeric" required></div>
+
+    <!-- QR Code -->
+    <div class="qr-box">
+      <img src="image/QR.jpg" alt="Scan & Pay QR Code">
+    </div>
+
+    <div class="section-title">Payment Details / পেমেন্ট বিবরণ</div>
+    <div class="input-group"><label>Bank Name / ব্যাংক নাম</label><input required></div>
+    <div class="input-group"><label>Transaction ID / লেনদেন আইডি</label><input required></div>
+    <div class="input-group"><label>UTR Number / ইউটিআর</label><input required></div>
+
+    <button type="submit" id="confirmButton">Confirm Order / অর্ডার নিশ্চিত করুন</button>
+
+  </form>
+
+</div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyA6G_gK8kYC8I_clx_q0FCG4VXKZXesZOw",
+  authDomain: "ruhaniyah-faith.firebaseapp.com",
+  projectId: "ruhaniyah-faith",
+  storageBucket: "ruhaniyah-faith.appspot.com",
+  messagingSenderId: "84938334074",
+  appId: "1:84938334074:web:9aef552e8a2cdf44ef40c3"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// DOM Elements
+const pName = document.getElementById("pName");
+const pPrice = document.getElementById("pPrice");
+const pDesc = document.getElementById("pDesc");
+const orderForm = document.getElementById("orderForm");
+const confirmButton = document.getElementById("confirmButton");
+const defaultButtonText = 'Confirm Order / অর্ডার নিশ্চিত করুন';
+
+// Product data from URL
+const params = new URLSearchParams(window.location.search);
+const productName  = params.get("name")  || "Product";
+const productPrice = params.get("price") || "0";
+const productDesc  = params.get("desc")  || "";
+
+pName.innerText  = productName;
+pPrice.innerText = productPrice;
+pDesc.innerText  = productDesc;
+
+// Order Form Submit
+orderForm.onsubmit = async (e) => {
+  e.preventDefault();
+  const f = e.target;
+
+  confirmButton.disabled = true;
+  confirmButton.classList.add("btn-loading");
+  confirmButton.innerHTML = `<span class="loading-text"><i class="fas fa-spinner fa-spin"></i> Processing...</span>`;
+
+  try {
+    const docRef = await addDoc(collection(db, "orders"), {
+      productName,
+      price: productPrice,
+      customer:{
+        name:   f[0].value,
+        mobile: f[1].value,
+        email:  f[2].value,
+        house:  f[3].value,
+        street: f[4].value,
+        area:   f[5].value,
+        city:   f[6].value,
+        state:  f[7].value,
+        pin:    f[8].value
+      },
+      payment:{
+        bank:          f[9].value,
+        transactionId: f[10].value,
+        utr:           f[11].value
+      },
+      status:"placed",
+      timestamp: serverTimestamp()
+    });
+
+    window.location.href = "tracking.html?id=" + docRef.id;
+
+  } catch (err) {
+    console.error(err);
+    alert("Order failed. Please try again.");
+    confirmButton.disabled = false;
+    confirmButton.classList.remove("btn-loading");
+    confirmButton.innerText = defaultButtonText;
+  }
+};
+</script>
+
+</body>
+</html>

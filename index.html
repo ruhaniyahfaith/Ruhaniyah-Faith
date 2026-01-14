@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Ruhaniyah Faith | Attar</title>
+
+<meta name="viewport" content="width=400, user-scalable=no">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+<style>
+:root{
+  --bg:#0b0f0c;
+  --card:#141b16;
+  --gold:#f1c40f;
+}
+
+/* Reset */
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  background:#000;
+  display:flex;
+  justify-content:center;
+  font-family:Segoe UI, sans-serif;
+}
+
+/* Fixed 400px frame */
+.app-frame{
+  width:400px;
+  max-width:400px;
+  min-height:100vh;
+  background:var(--bg);
+  color:#fff;
+  overflow:hidden;
+  position:relative;
+}
+
+/* Overlay */
+.overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.45);
+  display:none;
+  z-index:15;
+}
+.overlay.active{display:block}
+
+/* Top Bar */
+.topbar{
+  display:grid;
+  grid-template-columns:40px 1fr;
+  align-items:center;
+  padding:14px;
+  background:#0f1a12;
+  position:sticky;
+  top:0;
+  z-index:20;
+}
+
+.menu-btn{
+  font-size:32px;
+  cursor:pointer;
+}
+
+.brand img{
+  height:60px;
+  width:100%;
+}
+
+/* Search Box */
+.search{
+  width:100%;
+  padding:10px 12px;
+  border-radius:20px;
+  border:none;
+  background:#1a2b1f;
+  color:#fff;
+}
+
+/* Side Menu */
+.side-menu{
+  position:fixed;
+  top:0;
+  left:-260px;
+  width:250px;
+  height:100%;
+  background:#121c15;
+  padding:20px;
+  transition:.3s;
+  z-index:30;
+}
+.side-menu.active{left:0}
+
+.side-menu div{
+  padding:16px 0;
+  font-size:18px;
+  text-align:left;
+  padding-left:15px;
+  border-bottom:1px solid #1f3d2b;
+  color:var(--gold);
+  cursor:pointer;
+  transition:.2s;
+}
+.side-menu div:hover{background:#1f3d2b}
+.side-menu div i{
+  margin-right:15px;
+  font-size:20px;
+  width:25px;
+  text-align:center;
+}
+
+/* Page Content */
+.page{padding:15px}
+
+/* Product Card */
+.product{
+  background:var(--card);
+  border-radius:18px;
+  margin-bottom:20px;
+  overflow:hidden;
+}
+.product img{
+  width:100%;
+  height:auto;
+  object-fit:cover;
+  border-bottom:1px solid #1f3d2b;
+  cursor:pointer;
+}
+.info{padding:15px}
+.info p{color:#ccc}
+.info button{
+  width:100%;
+  padding:12px;
+  margin-top:10px;
+  border:none;
+  border-radius:8px;
+  background:linear-gradient(45deg,var(--gold),#d4ac0d);
+  font-size:16px;
+  cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="app-frame">
+
+  <div class="overlay" id="overlay" onclick="closeMenu()"></div>
+
+  <!-- Side Menu -->
+  <div class="side-menu" id="menu">
+    <div onclick="openCustomerSupport()">
+      <i class="fa-solid fa-headset"></i> Customer Support
+    </div>
+    <div onclick="openOfferPage()">
+      <i class="fa-solid fa-gift"></i> Gift Offers
+    </div>
+    <div onclick="openTrackingPage()">
+      <i class="fa-solid fa-truck"></i> Order Tracking
+    </div>
+    <div onclick="openFeedbackPage()">
+      <i class="fa-solid fa-comment-dots"></i> Feedback
+    </div>
+  </div>
+
+  <!-- Brand Logo -->
+  <div class="brand">
+    <img id="logo" src="image/lo.jpg" alt="logo">
+  </div>
+
+  <!-- Top Bar -->
+  <div class="topbar">
+    <div class="menu-btn" onclick="toggleMenu()">☰</div>
+    <input class="search" id="search" placeholder="Search">
+  </div>
+
+  <!-- Main Content -->
+  <div id="home" class="page"></div>
+
+</div>
+
+<script>
+const ORDER_PAGE_URL    = "order.html";
+const SUPPORT_PAGE_URL  = "support.html";
+const OFFER_PAGE_URL    = "offer.html";
+const TRACKING_PAGE_URL = "tracking.html";
+const FEEDBACK_PAGE_URL = "feedback.html"; // ✅ Feedback Page
+
+const products = [
+  {name:"LABBAIK ATTAR", description:"LABBAIK great fragancy Lang last...", price:599, offerPrice:179, image:"image/pr1.jpg"},
+  {name:"SHANAYA ATTAR", description:"Shanaya Attar For Men and Women | Arabic & French Scent |Non-Alcoholic Roll-on - 5.5ml Attar.", price:850, offerPrice:249, image:"image/pr2.png"},
+  {name:"SHANAYA ATTAR", description:"SHANNAYA great fragrance long lasting men women", price:249, offerPrice:169, image:"image/pr3.png"},
+];
+
+const home = document.getElementById("home");
+
+// Render Product Cards
+function renderProducts(list){
+  home.innerHTML="";
+  list.forEach(p=>{
+    home.innerHTML+=`
+      <div class="product">
+        <img src="${p.image}" alt="${p.name}" onclick="openProduct('${p.name}', ${p.offerPrice})">
+        <div class="info">
+          <h3>${p.name}</h3>
+          <p>${p.description}</p>
+          <p><del>₹${p.price}</del> <span style="color:#f1c40f;font-size:18px">₹${p.offerPrice}</span></p>
+          <button onclick="goToOrder('${p.name}', ${p.offerPrice})">Order Now</button>
+        </div>
+      </div>
+    `;
+  });
+}
+renderProducts(products);
+
+// Search Filter
+document.getElementById("search").addEventListener("input", function(){
+  const v=this.value.toLowerCase();
+  renderProducts(products.filter(p=>p.name.toLowerCase().includes(v)));
+});
+
+// Navigation Functions
+function goToOrder(name, price){window.location.href="order.html?name="+encodeURIComponent(name)+"&price="+price}
+
+function toggleMenu(){menu.classList.toggle("active"); overlay.classList.toggle("active")}
+function closeMenu(){menu.classList.remove("active"); overlay.classList.remove("active")}
+
+function openCustomerSupport(){location.href=SUPPORT_PAGE_URL}
+function openOfferPage(){location.href=OFFER_PAGE_URL}
+function openTrackingPage(){location.href=TRACKING_PAGE_URL}
+function openFeedbackPage(){location.href=FEEDBACK_PAGE_URL} // ✅ Opens Feedback
+</script>
+
+</body>
+</html>
